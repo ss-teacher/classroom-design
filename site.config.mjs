@@ -6,6 +6,10 @@ export const SITE = {
   name: '교실행동디자인',
   description: '학생을 바꾸기 전에, 행동하기 쉬운 교실을 만듭니다. 행동경제학과 심리학을 교실에 적용하는 방법을 나눕니다.',
   instagram: 'https://www.instagram.com/ss__teacher/',
+  // 블로그 주소를 따옴표 안에 넣으면 소개 화면에 블로그 버튼이 생깁니다. 비워 두면 버튼이 나오지 않습니다.
+  blog: 'https://blog.naver.com/lss2167',
+  blogName: '상수쌤의 쓸모있는 학교생활',
+  email: 'lss2167@naver.com',
 };
 
 // 노션 공개용 데이터베이스(데이터 소스) — 사이트는 이 세 개만 읽습니다.
