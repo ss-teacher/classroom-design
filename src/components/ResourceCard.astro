@@ -3,7 +3,9 @@ import { href, conceptsOf, scenesOf, searchText, resourceEmoji } from '../lib/da
 const { resource: r, tone = 'light', filter = false } = Astro.props;
 const concepts = conceptsOf(r);
 const scenes = scenesOf(r);
-const ready = r.runUrl || r.files.length > 0;
+// 버튼에는 확장자(.pdf)와 밑줄(_)을 뺀 이름을 보여 줍니다.
+const fileLabel = (name) => name.replace(/\.[^.]+$/, '').replaceAll('_', ' ');
+const ready =r.runUrl || r.files.length > 0;
 const attrs = filter
   ? {
       'data-item': '',
@@ -53,7 +55,7 @@ const attrs = filter
           href={f.external ? f.href : href(`/${f.path}`)}
           download={f.external ? undefined : f.name}
         >
-          내려받기{r.files.length > 1 && <span> · {f.name}</span>}
+          {r.files.length > 1 ? `내려받기 · ${fileLabel(f.name)}` : '내려받기'}
         </a>
       ))
     }
