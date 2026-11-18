@@ -269,6 +269,13 @@ async function main() {
 }
 
 async function writeSummary(ok) {
+  // GitHub 반영 기록 화면의 'Annotations' 칸에 보이도록 남깁니다.
+  if (process.env.GITHUB_ACTIONS) {
+    const esc = (s) => s.replaceAll('%', '%25').replaceAll('\r', '').replaceAll('\n', '%0A');
+    const kind = ok ? 'notice' : 'error';
+    const label = ok ? '노션 반영 기록' : '노션 반영 실패 (기존 사이트 유지)';
+    console.log(`::${kind} title=${label}::${esc(report.join('\n'))}`);
+  }
   if (!process.env.GITHUB_STEP_SUMMARY) return;
   const head = ok ? '### 노션 반영 기록' : '### 노션 반영 실패 — 기존 사이트를 그대로 둡니다';
   await appendFile(process.env.GITHUB_STEP_SUMMARY, `${head}\n\n\`\`\`\n${report.join('\n')}\n\`\`\`\n`);
