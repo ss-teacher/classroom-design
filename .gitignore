@@ -1,0 +1,13 @@
+# 노션 키가 들어 있는 파일 — 절대 인터넷(GitHub)에 올라가지 않게 막습니다
+.env
+.env.*
+!.env.example
+
+# 자동으로 만들어지는 폴더
+node_modules/
+dist/
+.astro/
+
+# 노션에서 그때그때 새로 받아 오는 내용 (저장소에 올리지 않습니다)
+src/data/notion.json
+public/files/

@@ -1,0 +1,58 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ConceptCard from '../../components/ConceptCard.astro';
+import FilterRow from '../../components/FilterRow.astro';
+import { PRINCIPLES, FIELDS } from '../../../site.config.mjs';
+import { concepts } from '../../lib/data.js';
+
+const core = concepts.filter((c) => c.core);
+const sorted = [...concepts].sort((a, b) => a.title.localeCompare(b.title, 'ko'));
+---
+
+<Layout title="개념 사전" description="교실 행동을 이해하는 데 도움이 되는 행동경제학·심리학 개념을 교실 장면과 함께 정리했습니다.">
+  <div class="wrap">
+    <header class="page-head">
+      <h1 class="page-title">개념 사전</h1>
+      <p class="page-lead">
+        교실 행동을 이해하는 데 도움이 되는 개념을 모았습니다. 하나의 이론으로 모든 것을 설명하기보다, 장면마다 쓸모 있는 여러
+        관점을 나란히 둡니다.
+      </p>
+    </header>
+
+    {
+      core.length > 0 && (
+        <section class="section" aria-labelledby="core">
+          <h2 class="section-title" id="core"><span class="emoji" aria-hidden="true">⭐</span>핵심 개념</h2>
+          <p class="section-note">여러 장면에서 반복해서 만나게 되는 개념입니다.</p>
+          <div class="grid">
+            {core.map((c) => <ConceptCard concept={c} />)}
+          </div>
+        </section>
+      )
+    }
+
+    <section class="section" aria-labelledby="all" data-filter-root>
+      <h2 class="section-title" id="all"><span class="emoji" aria-hidden="true">📖</span>전체 개념</h2>
+      <p class="section-note">다섯 가지 원리는 여러 연구와 실천을 정리한 틀입니다.</p>
+      <div class="filters" style="margin-top:0">
+        <FilterRow label="원리" group="principle" options={PRINCIPLES.map((p) => p.name)} />
+        <FilterRow label="분야" group="field" options={FIELDS} />
+      </div>
+      <p class="filter-count" aria-live="polite">개념 <span data-filter-count>{sorted.length}개</span></p>
+      <div class="grid">
+        {sorted.map((c) => <ConceptCard concept={c} filter />)}
+      </div>
+      <p class="empty" data-filter-empty hidden={sorted.length > 0}>
+        {sorted.length > 0 ? '조건에 맞는 개념이 없습니다. 원리나 분야를 바꿔 보세요.' : '개념을 준비하고 있습니다. 곧 채워집니다.'}
+      </p>
+    </section>
+  </div>
+</Layout>
+
+<script>
+  import '../../scripts/filter.js';
+  // 첫 화면의 원리 카드에서 넘어온 경우, 전체 개념 목록으로 바로 내려갑니다.
+  if (new URLSearchParams(location.search).get('principle')) {
+    document.getElementById('all')?.scrollIntoView();
+  }
+</script>

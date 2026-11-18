@@ -1,0 +1,17 @@
+---
+import { href, searchText, sceneEmoji } from '../lib/data.js';
+const { scene, filter = false } = Astro.props;
+const attrs = filter
+  ? { 'data-item': '', 'data-area': scene.area ?? '', 'data-search': searchText(scene.title, scene.empathy, scene.why) }
+  : {};
+---
+
+<a class="card scene-card" href={href(`/scenes/${scene.slug}/`)} {...attrs}>
+  <span class="tile" aria-hidden="true">{sceneEmoji(scene)}</span>
+  <p class="scene-card__empathy">{scene.empathy || scene.title}</p>
+  <p class="scene-card__title">{scene.title}</p>
+  <div class="chips">
+    {scene.area && <span class="chip">{scene.area}</span>}
+    {!scene.published && <span class="chip chip--draft">비공개</span>}
+  </div>
+</a>

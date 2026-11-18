@@ -1,0 +1,20 @@
+{
+  "name": "classroom-behavior-design",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "check": "node --env-file-if-exists=.env scripts/check-notion.mjs",
+    "fetch": "node --env-file-if-exists=.env scripts/fetch-notion.mjs",
+    "dev": "node --env-file-if-exists=.env scripts/fetch-notion.mjs && astro dev",
+    "dev:preview": "node --env-file-if-exists=.env scripts/fetch-notion.mjs --preview && astro dev",
+    "build": "node --env-file-if-exists=.env scripts/fetch-notion.mjs && astro build",
+    "serve": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^7.4.12"
+  }
+}

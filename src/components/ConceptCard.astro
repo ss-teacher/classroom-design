@@ -1,0 +1,25 @@
+---
+import { href, searchText, conceptEmoji } from '../lib/data.js';
+const { concept, filter = false } = Astro.props;
+const attrs = filter
+  ? {
+      'data-item': '',
+      'data-principle': concept.principles.join('|'),
+      'data-field': concept.field ?? '',
+      'data-search': searchText(concept.title, concept.summary),
+    }
+  : {};
+---
+
+<a class="card" href={href(`/concepts/${concept.slug}/`)} {...attrs}>
+  <div class="card-top">
+    <span class="tile tile--warm" aria-hidden="true">{conceptEmoji(concept)}</span>
+    <p class="concept-card__title">{concept.title}</p>
+  </div>
+  <p class="concept-card__summary">{concept.summary}</p>
+  <div class="chips">
+    {concept.principles.map((p) => <span class="chip chip--warm">{p}</span>)}
+    {concept.field && <span class="chip chip--line">{concept.field}</span>}
+    {!concept.published && <span class="chip chip--draft">비공개</span>}
+  </div>
+</a>

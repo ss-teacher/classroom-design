@@ -1,0 +1,159 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SceneCard from '../components/SceneCard.astro';
+import ResourceCard from '../components/ResourceCard.astro';
+import { PRINCIPLES, SEASON_MONTHS, SEASON_DEFAULT, EMOJI } from '../../site.config.mjs';
+import { href, homeScenes, currentSeason, seasonResources, scenes } from '../lib/data.js';
+
+const cards = homeScenes();
+const seasonNow = currentSeason();
+const seasonNames = [...new Set([...Object.keys(SEASON_MONTHS), SEASON_DEFAULT])];
+const seasonGroups = seasonNames.map((name) => ({ name, list: seasonResources(name) }));
+---
+
+<Layout>
+  <section class="wrap hero">
+    <div class="hero__art" aria-hidden="true">
+      <svg viewBox="0 0 420 320" xmlns="http://www.w3.org/2000/svg" role="presentation">
+        <rect x="0" y="0" width="420" height="320" rx="28" fill="#E8F0FC"></rect>
+        <!-- 칠판: 할 일을 보이게 -->
+        <rect x="48" y="36" width="230" height="124" rx="10" fill="#1E4FB5"></rect>
+        <rect x="48" y="154" width="230" height="10" rx="5" fill="#163C8C"></rect>
+        <g fill="none" stroke-linecap="round" stroke-width="6">
+          <path d="M72 70l7 7 12-14" stroke="#FFD166"></path>
+          <path d="M108 70h120" stroke="#fff"></path>
+          <path d="M72 100l7 7 12-14" stroke="#FFD166"></path>
+          <path d="M108 100h92" stroke="#fff"></path>
+          <rect x="70" y="121" width="20" height="20" rx="4" stroke="#FFD166" stroke-width="4"></rect>
+          <path d="M108 131h136" stroke="#fff" opacity=".7"></path>
+        </g>
+        <!-- 시계: 제때 -->
+        <circle cx="342" cy="84" r="34" fill="#fff" stroke="#1E4FB5" stroke-width="6"></circle>
+        <path d="M342 62v22l15 10" fill="none" stroke="#16202E" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>
+        <circle cx="342" cy="84" r="4" fill="#FFD166"></circle>
+        <!-- 새싹: 작게 -->
+        <path d="M342 212v-34" stroke="#2E9E6B" stroke-width="5" stroke-linecap="round"></path>
+        <path d="M342 190c-18 0-24-10-24-20 16 0 24 8 24 20z" fill="#2E9E6B"></path>
+        <path d="M342 182c16 0 22-9 22-18-15 0-22 7-22 18z" fill="#58C08F"></path>
+        <path d="M322 212h40l-5 28h-30z" fill="#FFD166"></path>
+        <!-- 아이들: 함께 -->
+        <g>
+          <circle cx="96" cy="212" r="20" fill="#FFD9B8"></circle>
+          <path d="M76 208a20 20 0 0 1 40 0c-10-8-30-8-40 0z" fill="#16202E"></path>
+          <rect x="62" y="238" width="68" height="46" rx="14" fill="#FFD166"></rect>
+          <circle cx="188" cy="206" r="20" fill="#F2C4A0"></circle>
+          <path d="M168 204a20 20 0 0 1 40 0c-6-12-34-12-40 0z" fill="#5B3A1E"></path>
+          <rect x="154" y="232" width="68" height="52" rx="14" fill="#1E4FB5"></rect>
+          <path d="M222 244l22-30" stroke="#F2C4A0" stroke-width="10" stroke-linecap="round"></path>
+          <circle cx="276" cy="216" r="18" fill="#FFD9B8"></circle>
+          <path d="M258 214a18 18 0 0 1 36 0c-9-7-27-7-36 0z" fill="#16202E"></path>
+          <rect x="246" y="240" width="60" height="44" rx="14" fill="#7FA8EE"></rect>
+        </g>
+        <!-- 책상 -->
+        <rect x="36" y="270" width="348" height="14" rx="7" fill="#fff"></rect>
+        <rect x="36" y="270" width="348" height="14" rx="7" fill="none" stroke="#1E4FB5" stroke-width="3"></rect>
+      </svg>
+    </div>
+    <div>
+    <p class="hero__eyebrow">지시와 통제가 아니라, 구조와 환경으로</p>
+    <h1 class="hero__title"><span>학생을 바꾸기 전에,</span> <span>행동하기 쉬운 교실을</span> <span>만듭니다</span></h1>
+    <p class="hero__lead">
+      아이들의 행동은 의지보다 환경에 더 많이 좌우됩니다. 교실에서 힘들었던 장면에서 출발해, 왜 그런 행동이 나오는지 살피고 바로
+      써 볼 수 있는 방법과 자료를 찾아보세요.
+    </p>
+    <form class="search" action={href('/search/')} method="get" role="search">
+      <label class="sr-only" for="home-q">장면 검색</label>
+      <input class="input" id="home-q" type="search" name="q" placeholder="예: 수업 전환이 오래 걸려요" autocomplete="off" />
+      <button class="btn" type="submit">찾아보기</button>
+    </form>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="home-scenes">
+    <h2 class="section-title" id="home-scenes"><span class="emoji" aria-hidden="true">🙋</span>오늘, 이런 장면이 있었나요?</h2>
+    <p class="section-note">마음에 걸리는 장면을 누르면, 왜 그런지와 바꿔볼 방법으로 이어집니다.</p>
+    {
+      cards.length > 0 ? (
+        <div class="grid">
+          {cards.map((s) => (
+            <SceneCard scene={s} />
+          ))}
+        </div>
+      ) : (
+        <p class="empty">장면을 준비하고 있습니다. 곧 채워집니다.</p>
+      )
+    }
+    {
+      scenes.length > cards.length && (
+        <p>
+          <a class="more-link" href={href('/scenes/')}>
+            장면 {scenes.length}개 모두 보기
+          </a>
+        </p>
+      )
+    }
+  </section>
+
+  <section class="band" aria-labelledby="home-season" data-season-band data-months={JSON.stringify(SEASON_MONTHS)} data-default={SEASON_DEFAULT}>
+    <div class="wrap">
+      {
+        seasonGroups.map((g) => (
+          <div data-season={g.name} hidden={g.name !== seasonNow}>
+            <h2 class="section-title" id={g.name === seasonNow ? 'home-season' : undefined}>
+              <span class="emoji" aria-hidden="true">🗓️</span>지금 시기에 쓰기 좋은 자료 <span class="band__season">· {g.name}</span>
+            </h2>
+            <p class="section-note">로그인 없이 누구나 바로 받을 수 있습니다.</p>
+            {g.list.length > 0 ? (
+              <div class="grid">
+                {g.list.map((r) => (
+                  <ResourceCard resource={r} tone="dark" />
+                ))}
+              </div>
+            ) : (
+              <p>이 시기에 맞는 자료를 준비하고 있습니다.</p>
+            )}
+          </div>
+        ))
+      }
+      <p>
+        <a class="more-link band__more" href={href('/library/')}>자료실 전체 보기</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="home-principles">
+    <h2 class="section-title" id="home-principles"><span class="emoji" aria-hidden="true">🖐️</span>다섯 가지 원리</h2>
+    <p class="section-note">여러 연구와 실천을 정리한 틀입니다.</p>
+    <div class="principles">
+      {
+        PRINCIPLES.map((p) => (
+          <a class="card" href={href(`/concepts/?principle=${encodeURIComponent(p.name)}`)}>
+            <span class="tile" aria-hidden="true">{EMOJI.principle[p.name]}</span><span class="principle__name">{p.name}</span>
+            <span class="principle__text">{p.text}</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="wrap closing">
+    <p class="closing__line">교실 행동 디자인의 가장 좋은 전문가는 아이들을 가장 잘 아는 담임 선생님입니다.</p>
+    <p class="closing__note">여기 있는 내용은 정답이 아니라 출발점입니다. 우리 반에 맞게 고쳐 쓰세요.</p>
+  </section>
+</Layout>
+
+<script is:inline>
+  // 사이트를 만든 날이 아니라 '보는 날'(한국 시간) 기준으로 시기를 다시 맞춥니다.
+  (function () {
+    var band = document.querySelector('[data-season-band]');
+    if (!band) return;
+    try {
+      var month = Number(new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Seoul', month: 'numeric' }).format(new Date()));
+      var months = JSON.parse(band.dataset.months);
+      var season = band.dataset.default;
+      for (var name in months) if (months[name].indexOf(month) !== -1) season = name;
+      var groups = band.querySelectorAll('[data-season]');
+      for (var i = 0; i < groups.length; i++) groups[i].hidden = groups[i].dataset.season !== season;
+    } catch (e) {}
+  })();
+</script>

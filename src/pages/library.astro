@@ -1,0 +1,34 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ResourceCard from '../components/ResourceCard.astro';
+import FilterRow from '../components/FilterRow.astro';
+import { SEASONS, RESOURCE_TYPES, AREAS } from '../../site.config.mjs';
+import { resources } from '../lib/data.js';
+---
+
+<Layout title="자료실" description="교실에서 바로 쓸 수 있는 활동지, 체크리스트, 수업자료, 프로그램을 로그인 없이 받을 수 있습니다.">
+  <div class="wrap" data-filter-root>
+    <header class="page-head">
+      <h1 class="page-title">자료실</h1>
+      <p class="page-lead">로그인 없이 누구나 바로 내려받거나 실행할 수 있습니다. 우리 반에 맞게 고쳐 쓰세요.</p>
+    </header>
+
+    <div class="filters">
+      <FilterRow label="시기" group="season" options={SEASONS} />
+      <FilterRow label="유형" group="type" options={RESOURCE_TYPES} />
+      <FilterRow label="영역" group="area" options={AREAS} />
+    </div>
+
+    <p class="filter-count" aria-live="polite">자료 <span data-filter-count>{resources.length}개</span></p>
+    <div class="grid">
+      {resources.map((r) => <ResourceCard resource={r} filter />)}
+    </div>
+    <p class="empty" data-filter-empty hidden={resources.length > 0}>
+      {resources.length > 0 ? '조건에 맞는 자료가 없습니다. 조건을 바꿔 보세요.' : '자료를 준비하고 있습니다. 곧 채워집니다.'}
+    </p>
+  </div>
+</Layout>
+
+<script>
+  import '../scripts/filter.js';
+</script>

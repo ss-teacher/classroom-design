@@ -1,0 +1,36 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SceneCard from '../../components/SceneCard.astro';
+import FilterRow from '../../components/FilterRow.astro';
+import { AREAS } from '../../../site.config.mjs';
+import { scenes } from '../../lib/data.js';
+---
+
+<Layout title="장면으로 찾기" description="교실에서 힘들었던 장면에서 출발해, 왜 그런 행동이 나오는지와 바꿔볼 방법을 찾습니다.">
+  <div class="wrap" data-filter-root>
+    <header class="page-head">
+      <h1 class="page-title">장면으로 찾기</h1>
+      <p class="page-lead">교실에서 마음에 걸렸던 장면을 골라 보세요. 왜 그런 행동이 나오는지, 어떻게 바꿔볼 수 있는지로 이어집니다.</p>
+    </header>
+
+    <div class="filters">
+      <form class="search" role="search" style="margin-top:0">
+        <label class="sr-only" for="scene-q">장면 검색</label>
+        <input class="input" id="scene-q" type="search" placeholder="예: 수업 전환이 오래 걸려요" autocomplete="off" data-filter-search />
+      </form>
+      <FilterRow label="영역" group="area" options={AREAS} />
+    </div>
+
+    <p class="filter-count" aria-live="polite">장면 <span data-filter-count>{scenes.length}개</span></p>
+    <div class="grid">
+      {scenes.map((s) => <SceneCard scene={s} filter />)}
+    </div>
+    <p class="empty" data-filter-empty hidden={scenes.length > 0}>
+      {scenes.length > 0 ? '조건에 맞는 장면이 없습니다. 검색어나 영역을 바꿔 보세요.' : '장면을 준비하고 있습니다. 곧 채워집니다.'}
+    </p>
+  </div>
+</Layout>
+
+<script>
+  import '../../scripts/filter.js';
+</script>

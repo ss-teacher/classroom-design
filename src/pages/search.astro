@@ -1,0 +1,50 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SceneCard from '../components/SceneCard.astro';
+import ConceptCard from '../components/ConceptCard.astro';
+import ResourceCard from '../components/ResourceCard.astro';
+import { scenes, concepts, resources } from '../lib/data.js';
+---
+
+<Layout title="검색">
+  <div class="wrap" data-filter-root>
+    <header class="page-head">
+      <h1 class="page-title">검색</h1>
+      <p class="page-lead">장면, 개념, 자료에서 함께 찾습니다. 떠오르는 말을 그대로 적어 보세요.</p>
+    </header>
+
+    <div class="filters">
+      <form class="search" role="search" style="margin-top:0">
+        <label class="sr-only" for="q">검색어</label>
+        <input class="input" id="q" type="search" name="q" placeholder="예: 수업 전환이 오래 걸려요" autocomplete="off" data-filter-search />
+      </form>
+    </div>
+
+    <p class="filter-count" aria-live="polite">찾은 결과 <span data-filter-count></span></p>
+
+    <section data-filter-section aria-labelledby="s-scenes">
+      <h2 class="section-title" id="s-scenes">장면</h2>
+      <div class="grid">
+        {scenes.map((s) => <SceneCard scene={s} filter />)}
+      </div>
+    </section>
+    <section class="section" data-filter-section aria-labelledby="s-concepts">
+      <h2 class="section-title" id="s-concepts">개념</h2>
+      <div class="grid">
+        {concepts.map((c) => <ConceptCard concept={c} filter />)}
+      </div>
+    </section>
+    <section class="section" data-filter-section aria-labelledby="s-resources">
+      <h2 class="section-title" id="s-resources">자료</h2>
+      <div class="grid">
+        {resources.map((r) => <ResourceCard resource={r} filter />)}
+      </div>
+    </section>
+
+    <p class="empty" data-filter-empty hidden>맞는 내용을 찾지 못했습니다. 낱말을 줄이거나 다른 말로 적어 보세요.</p>
+  </div>
+</Layout>
+
+<script>
+  import '../scripts/filter.js';
+</script>

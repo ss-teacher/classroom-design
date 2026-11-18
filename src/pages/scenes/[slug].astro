@@ -1,0 +1,90 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SceneCard from '../../components/SceneCard.astro';
+import ResourceCard from '../../components/ResourceCard.astro';
+import IdeaList from '../../components/IdeaList.astro';
+import { href, scenes, conceptsOf, resourcesOf, similarScenes, sceneEmoji, conceptEmoji } from '../../lib/data.js';
+
+export function getStaticPaths() {
+  return scenes.map((scene) => ({ params: { slug: scene.slug }, props: { scene } }));
+}
+const { scene } = Astro.props;
+const concepts = conceptsOf(scene);
+const resources = resourcesOf(scene);
+const similar = similarScenes(scene);
+---
+
+<Layout title={scene.title} description={scene.empathy || scene.why}>
+  <article class="wrap wrap--narrow">
+    <header class="detail-head">
+      <a class="back-link" href={href('/scenes/')}>장면으로 찾기</a>
+      <div class="chips">
+        {scene.area && <span class="chip">{scene.area}</span>}
+        {scene.seasons.map((s) => <span class="chip chip--line">{s}</span>)}
+        {!scene.published && <span class="chip chip--draft">비공개</span>}
+      </div>
+      <div class="detail-title-row"><span class="tile tile--lg" aria-hidden="true">{sceneEmoji(scene)}</span><h1 class="detail-title">{scene.title}</h1></div>
+      {scene.empathy && <p class="detail-empathy">{scene.empathy}</p>}
+    </header>
+
+    {
+      scene.why && (
+        <section class="box" aria-labelledby="why">
+          <h2 class="box__label" id="why"><span class="emoji" aria-hidden="true">🤔</span>왜 그럴까</h2>
+          <p>{scene.why}</p>
+        </section>
+      )
+    }
+
+    {
+      concepts.length > 0 && (
+        <section class="section" aria-labelledby="how">
+          <h2 class="section-title" id="how"><span class="emoji" aria-hidden="true">💡</span>이렇게 바꿔볼 수 있어요</h2>
+          <div class="stack">
+            {concepts.map((c) => (
+              <div class="card">
+                <div class="concept-block__head">
+                  <span class="tile tile--warm" aria-hidden="true">{conceptEmoji(c)}</span><h3 class="concept-block__title">{c.title}</h3>
+                  <div class="chips">
+                    {c.principles.map((p) => <span class="chip chip--warm">{p}</span>)}
+                    {!c.published && <span class="chip chip--draft">비공개</span>}
+                  </div>
+                </div>
+                <p class="concept-block__summary">{c.summary}</p>
+                <IdeaList ideas={c.ideas} />
+                <p style="margin-top:10px">
+                  <a class="more-link" href={href(`/concepts/${c.slug}/`)}>
+                    개념 더 보기<span class="sr-only">: {c.title}</span>
+                  </a>
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    {
+      resources.length > 0 && (
+        <section class="section" aria-labelledby="res">
+          <h2 class="section-title" id="res"><span class="emoji" aria-hidden="true">🎁</span>바로 쓸 수 있는 자료</h2>
+          <p class="section-note">로그인 없이 누구나 바로 받을 수 있습니다.</p>
+          <div class="stack">
+            {resources.map((r) => <ResourceCard resource={r} tone="dark" />)}
+          </div>
+        </section>
+      )
+    }
+
+    {
+      similar.length > 0 && (
+        <section class="section" aria-labelledby="similar">
+          <h2 class="section-title" id="similar"><span class="emoji" aria-hidden="true">👀</span>비슷한 장면</h2>
+          <div class="stack">
+            {similar.map((s) => <SceneCard scene={s} />)}
+          </div>
+        </section>
+      )
+    }
+  </article>
+</Layout>

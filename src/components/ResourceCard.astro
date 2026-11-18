@@ -1,0 +1,68 @@
+---
+import { href, conceptsOf, scenesOf, searchText, resourceEmoji } from '../lib/data.js';
+const { resource: r, tone = 'light', filter = false } = Astro.props;
+const concepts = conceptsOf(r);
+const scenes = scenesOf(r);
+const ready = r.runUrl || r.files.length > 0;
+const attrs = filter
+  ? {
+      'data-item': '',
+      'data-season': r.seasons.join('|'),
+      'data-type': r.type ?? '',
+      'data-area': r.area ?? '',
+      'data-search': searchText(r.title, r.intro),
+    }
+  : {};
+---
+
+<article class:list={['card', 'rcard', tone === 'dark' && 'rcard--dark']} id={r.slug} {...attrs}>
+  <div class="chips">
+    {r.type && <span class="chip chip--warm">{r.type}</span>}
+    {r.seasons.map((s) => <span class="chip chip--line">{s}</span>)}
+    {r.grades.map((g) => <span class="chip chip--line">{g}</span>)}
+    {!r.published && <span class="chip chip--draft">비공개</span>}
+  </div>
+  <div class="card-top">
+    <span class="tile tile--warm" aria-hidden="true">{resourceEmoji(r)}</span>
+    <h3 class="rcard__title">{r.title}</h3>
+  </div>
+  <p class="rcard__intro">{r.intro}</p>
+  {
+    concepts.length > 0 ? (
+      <p class="rcard__links">
+        근거 개념 {concepts.map((c) => <a href={href(`/concepts/${c.slug}/`)}>{c.title}</a>)}
+      </p>
+    ) : scenes.length > 0 ? (
+      <p class="rcard__links">
+        관련 장면 {scenes.map((s) => <a href={href(`/scenes/${s.slug}/`)}>{s.title}</a>)}
+      </p>
+    ) : null
+  }
+  <div class="rcard__actions">
+    {
+      r.runUrl && (
+        <a class="btn btn--accent" href={r.runUrl} target="_blank" rel="noopener noreferrer">
+          바로 실행
+        </a>
+      )
+    }
+    {
+      r.files.map((f) => (
+        <a
+          class:list={['btn', r.runUrl ? (tone === 'dark' ? 'btn--accent' : 'btn--ghost') : 'btn--accent']}
+          href={f.external ? f.href : href(`/${f.path}`)}
+          download={f.external ? undefined : f.name}
+        >
+          내려받기{r.files.length > 1 && <span> · {f.name}</span>}
+        </a>
+      ))
+    }
+    {
+      !ready && (
+        <button class="btn" type="button" disabled>
+          준비 중
+        </button>
+      )
+    }
+  </div>
+</article>

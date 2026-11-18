@@ -1,0 +1,16 @@
+---
+// 거르기 버튼 한 줄. group 은 카드의 data-<group> 값과 짝을 이룹니다.
+const { label, group, options } = Astro.props;
+---
+
+<div class="filter-row" role="group" aria-label={`${label}으로 거르기`} data-filter-group={group}>
+  <span class="filter-row__label" aria-hidden="true">{label}</span>
+  <button class="filter-btn" type="button" data-value="" aria-pressed="true">전체</button>
+  {
+    options.map((o) => (
+      <button class="filter-btn" type="button" data-value={o} aria-pressed="false">
+        {o}
+      </button>
+    ))
+  }
+</div>

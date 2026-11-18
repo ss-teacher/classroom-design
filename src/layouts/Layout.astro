@@ -1,0 +1,79 @@
+---
+import '../styles/global.css';
+import { SITE } from '../../site.config.mjs';
+import { href, preview } from '../lib/data.js';
+
+const { title, description = SITE.description } = Astro.props;
+const pageTitle = title ? `${title} | ${SITE.name}` : SITE.name;
+const menu = [
+  { label: '장면으로 찾기', path: '/scenes/' },
+  { label: '개념 사전', path: '/concepts/' },
+  { label: '자료실', path: '/library/' },
+  { label: '소개', path: '/about/' },
+];
+const here = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ko_KR" />
+    <link rel="icon" type="image/svg+xml" href={href('/favicon.svg')} />
+    <meta name="theme-color" content="#1E4FB5" />
+    {preview && <meta name="robots" content="noindex" />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
+    />
+  </head>
+  <body>
+    {
+      preview && (
+        <div class="preview-bar" role="note">
+          미리보기 모드 — '공개'가 꺼진 줄도 보입니다. 이 화면은 내 컴퓨터에서만 보이며 실제 사이트에는 나오지 않습니다.
+        </div>
+      )
+    }
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href={href('/')}><svg class="brand__mark" width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#1E4FB5"/><path d="M8 13.5l3.2 3.2L16.5 10" fill="none" stroke="#FFD166" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.5 13.5H25M8 22h17" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>{SITE.name}</a>
+        <nav class="nav" aria-label="주 메뉴">
+          {
+            menu.map((m) => (
+              <a href={href(m.path)} aria-current={here.startsWith(href(m.path)) ? 'page' : undefined}>
+                {m.label}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <strong>{SITE.name}</strong>
+        <a href={SITE.instagram} target="_blank" rel="noopener noreferrer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <rect x="3.5" y="3.5" width="17" height="17" rx="4.5"></rect>
+            <circle cx="12" cy="12" r="4"></circle>
+            <circle cx="17" cy="7" r="0.6" fill="currentColor"></circle>
+          </svg>
+          인스타그램 @ss__teacher
+        </a>
+      </div>
+    </footer>
+  </body>
+</html>
